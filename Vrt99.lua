@@ -819,8 +819,7 @@ local HideEggAnimationToggle =
                print("HIDING EGG ANIM")
                task.spawn(function()
                    while getgenv().Lib.functionToggles.HideEggAnimation do
-                   print("hiding")
-                        getgenv().Lib.functions.HideEggAnimation()
+                   print("hiding") getgenv().Lib.functions.HideEggAnimation()
                    wait(1)
                end)
            else
