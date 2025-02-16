@@ -212,6 +212,7 @@ getgenv().Lib = {
             end
         end,
         EnterValentineEvent = function()
+            print("ENTERING")
             if not workspace.__THINGS.__INSTANCE_CONTAINER.Active:FindFirstChild("TowerTycoon") then
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.__THINGS.Instances.TowerTycoon.Teleports.Enter.CFrame
             end
@@ -817,12 +818,7 @@ local HideEggAnimationToggle =
            if Value then
                HookEggAnimationToggle:Set(false)
                print("HIDING EGG ANIM")
-               task.spawn(function()
-                   while getgenv().Lib.functionToggles.HideEggAnimation do
-                   print("hiding") getgenv().Lib.functions.HideEggAnimation()
-                   wait(1)
-                   end
-               end)
+               getgenv().Lib.functions.HideEggAnimation()
            else
                EggOpening.PlayEggAnimation = getgenv().Lib.functionsValues.EggAnimation
            end
