@@ -168,6 +168,7 @@ getgenv().Lib = {
             end
         end,
         HideEggAnimation = function()
+            print("HIDING EGG ANIM 2")
             EggOpening.PlayEggAnimation = function()
                 return
             end
@@ -678,7 +679,12 @@ BestEgg = Tab:CreateToggle({
             FarmValZone:Set(false)
             task.spawn(function()
                 while getgenv().Lib.functionToggles.HatchBestIslandEgg do
-                    getgenv().Lib.functions.HatchBestIslandEgg()
+                    local success,err = pcall(function()
+                        return getgenv().Lib.functions.HatchBestIslandEgg()
+                    end)
+                    if not success then
+                        print("ERROR IN HATCH BEST ISLAND EGG:", err)
+                    end
                     task.wait(1)
                 end
             end)
@@ -810,6 +816,7 @@ local HideEggAnimationToggle =
            getgenv().Lib.functionToggles.HideEggAnimation = Value
            if Value then
                HookEggAnimationToggle:Set(false)
+               print("HIDING EGG ANIM")
                getgenv().Lib.functions.HideEggAnimation()
            else
                EggOpening.PlayEggAnimation = getgenv().Lib.functionsValues.EggAnimation
@@ -929,7 +936,9 @@ local Toggle =
        Callback = function(Value)
            getgenv().Lib.functionToggles.OptimizeBreakables = Value
            if Value then
-               getgenv().Lib.functions.OptimizeBreakables()
+                local success, err = pcall(function()
+                    return getgenv().Lib.functions.OptimizeBreakables()
+                end)
            else
                if getgenv().Lib.OptimizeBreakables then
                    getgenv().Lib.OptimizeBreakables:Disconnect()
