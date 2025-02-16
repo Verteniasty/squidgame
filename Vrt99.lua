@@ -12,6 +12,7 @@ function antiafk()
 end
 antiafk()
 
+
 local RunService = game:GetService("RunService")
 
 local closestBreakables = {}
@@ -53,6 +54,7 @@ getgenv().Lib = {
        HugePetSpeed = false,
        FarmLastArea = false,
        BuyEventUpgrades = false,
+       Rebirth = false,
    },
    functionsValues = {
        ClickAuraValue = 75,
@@ -100,12 +102,9 @@ getgenv().Lib = {
             end
         end,
         OptimizeBreakables = function()
-            getgenv().Lib.OptimizeBreakables =
-                workspace.__DEBRIS.ChildAdded:Connect(
-                function(child)
-                    game.Debris:AddItem(child, 0)
-                end
-            )
+            getgenv().Lib.OptimizeBreakables = workspace.__DEBRIS.ChildAdded:Connect(function(child)
+                game.Debris:AddItem(child, 0)
+            end)
         end,
         OptimizePets = function()
             for i, v in pairs(workspace.__THINGS.Pets:GetChildren()) do
@@ -217,10 +216,10 @@ getgenv().Lib = {
             end
         end,
         FarmValentineZone = function()
-            if workspace.__THINGS.__INSTANCE_CONTAINER.Active:FindFirstChild("TowerTycoon") then
-                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - workspace.__THINGS.__INSTANCE_CONTAINER.Active.TowerTycoon.BREAK_ZONES["Tower_Zone_" .. game.Players.LocalPlayer.Name].Position).Magnitude
+            if workspace.__THINGS.__INSTANCE_CONTAINER.Active:FindFirstChild("TowerTycoon") and workspace.__THINGS.__INSTANCE_CONTAINER.Active.TowerTycoon.BREAK_ZONES:FindFirstChild("Tower_Zone_" .. game.Players.LocalPlayer.Name) then
+                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - workspace.__THINGS.__INSTANCE_CONTAINER.Active.TowerTycoon.BREAK_ZONES:FindFirstChild("Tower_Zone_" .. game.Players.LocalPlayer.Name).Position).Magnitude
                 if distance > 20 then
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.__THINGS.__INSTANCE_CONTAINER.Active.TowerTycoon.BREAK_ZONES["Tower_Zone_" .. game.Players.LocalPlayer.Name].CFrame + Vector3.new(0,2,0)
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.__THINGS.__INSTANCE_CONTAINER.Active.TowerTycoon.BREAK_ZONES:FindFirstChild("Tower_Zone_" .. game.Players.LocalPlayer.Name).CFrame + Vector3.new(0,2,0)
                 end
             end
         end,
@@ -256,6 +255,9 @@ getgenv().Lib = {
                     game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Consumables_Consume"):InvokeServer(unpack(args))
                 end
             end
+        end,
+        Rebirth = function()
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Tycoons: Request Rebirth"):InvokeServer()
         end,
    }
 }
@@ -684,6 +686,24 @@ BestEgg = Tab:CreateToggle({
     end,
 })
 
+local Toggle = Tab:CreateToggle({
+    Name = "Valentine Rebirth",
+    CurrentValue = false,
+    Flag = "ValentineRebirth", 
+    Callback = function(Value)
+        getgenv().Lib.functionToggles.Rebirth = Value
+        task.spawn(
+            function()
+                while getgenv().Lib.functionToggles.Rebirth do
+                    local success, err = pcall(getgenv().Lib.functions.Rebirth)
+                    if not success then warn("[ERROR] VALENTINE REBIRTH:", err) end
+                    task.wait(1)
+                end
+            end
+        )
+    end,
+ })
+
 local CraftLoveGift = Tab:CreateToggle({
     Name = "Craft Love Gift",
     CurrentValue = false,
@@ -691,7 +711,6 @@ local CraftLoveGift = Tab:CreateToggle({
     Callback = function(Value)
         getgenv().Lib.functionToggles.CraftLoveGift = Value
         if Value then
-            FarmValZone:Set(false)
             task.spawn(function()
                 while getgenv().Lib.functionToggles.CraftLoveGift do
                     getgenv().Lib.functions.CraftLoveGift()
@@ -709,7 +728,6 @@ local UseTowerbsts = Tab:CreateToggle({
     Callback = function(Value)
         getgenv().Lib.functionToggles.UseTowerBoosts = Value
         if Value then
-            FarmValZone:Set(false)
             task.spawn(function()
                 while getgenv().Lib.functionToggles.UseTowerBoosts do
                     getgenv().Lib.functions.UseTowerBoosts()
