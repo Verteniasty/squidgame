@@ -821,6 +821,7 @@ local HideEggAnimationToggle =
                    while getgenv().Lib.functionToggles.HideEggAnimation do
                    print("hiding") getgenv().Lib.functions.HideEggAnimation()
                    wait(1)
+                   end
                end)
            else
                EggOpening.PlayEggAnimation = getgenv().Lib.functionsValues.EggAnimation
